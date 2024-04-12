@@ -33,13 +33,13 @@ public class Rendevousservice {
         return rendevousrepository.save(rendevous);
     }
     public List<Rendevous> getrendevousbyclinisueandsp(Long idclinique, Specialite specialite){
-        Clinique c=cliniquerepository.findById(idclinique).orElse(null);
-        List<Rendevous> list=rendevousrepository.findAll();
-        List<Rendevous> resultat=new ArrayList<>();
-        for(Rendevous r:list){
-            Medecin m=r.getMedecin();
-            if(r.getMedecin().getCliniques()!=null){
-                for(Clinique cc:r.getMedecin().getCliniques()){
+        Clinique c = cliniquerepository.findById(idclinique).orElse(null);
+        List<Rendevous> list = rendevousrepository.findAll();
+        List<Rendevous> resultat = new ArrayList<>();
+        for(Rendevous r : list){
+            Medecin m = r.getMedecin();
+            if(m != null && m.getCliniques() != null){ // Null check added here
+                for(Clinique cc : m.getCliniques()){
                     if(c.equals(cc) && m.getSpecialite().equals(specialite)){
                         resultat.add(r);
                     }
@@ -54,11 +54,13 @@ public class Rendevousservice {
         Medecin m=medecinRepository.findById(idMedecin).orElse(null);
         List<Rendevous> list=rendevousrepository.findAll();
         for(Rendevous r:list){
-            nb++;
+            if (r.getMedecin() != null && r.getMedecin().equals(m)) {
+                nb++;
+            }
         }
         return nb;
     }
-    @Scheduled(cron = "*/30 * * * *")
+    @Scheduled(cron = "0 */30 * * * *")
     public void retrieveRendevous(){
         List<Rendevous> list=rendevousrepository.findAll();
         for(Rendevous r:list){

@@ -12,4 +12,10 @@ public class Patientservice {
     public Patient addpatient(Patient patient){
         return patientRepository.save(patient);
     }
+    public void updatepatient(Patient patient,Long idpatient){
+        if (patientRepository.existsById(idpatient)) {
+            patient.setIdpatient(idpatient);
+            patientRepository.save(patient);
+        }
+    }
 }
